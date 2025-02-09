@@ -62,47 +62,47 @@ void init_display(ssd1306_t *ssd);
 void update_led_messages();
 static void gpio_irq_handler(uint gpio, uint32_t events);
 
-static volatile uint32_t last_time_btn_a = 0; 
-static volatile uint32_t last_time_btn_b = 0; 
+static volatile uint32_t last_press_a = 0; 
+static volatile uint32_t last_press_b = 0; 
 static volatile bool green_led_state = false; 
 static volatile bool blue_led_state = false; 
-static char green_led_state_message[20] = "Verde OFF.";
-static char blue_led_state_message[20] = "Azul OFF."; 
+static char message_for_green[20] = "Verde OFF.";
+static char message_for_blue[20] = "Azul OFF."; 
 
-// Inicializa o display OLED
-ssd1306_t ssd; // Inicializa a estrutura do display
+// aqui inicializa o display OLED
+ssd1306_t ssd; // aqui inicializa a estrutura do display
 
 int main() {
     stdio_init_all();
 
-    // Inicializa os LEDs
+    // aqui inicia as leds verde e azul
     init_led(GREEN_LED_PIN);
     init_led(BLUE_LED_PIN);
 
-    // Inicializa os botões
+    // aqui está incializando os botões
     init_btn(BTN_A_PIN);
     init_btn(BTN_B_PIN);
 
-    // Inicializa a comunicação I2C
+    // aqui está a comunicação I2C
     init_i2c();
 
-    // Inicializa o display
+    // aqui inicializa o display
     init_display(&ssd);
 
-    // Inicializa a matriz de LEDs WS2812
+    // aqui inicializa a matriz de LEDs WS2812
     ws2812b_init(LED_MATRIX_PIN);
 
     // Exibe as mensagens iniciais no display
     ssd1306_fill(&ssd, false); // Limpa o display
-    ssd1306_draw_string(&ssd, green_led_state_message, 10, 10);
-    ssd1306_draw_string(&ssd, blue_led_state_message, 10, 50);
+    ssd1306_draw_string(&ssd, message_for_green, 10, 10);
+    ssd1306_draw_string(&ssd, message_for_blue, 10, 50);
     ssd1306_send_data(&ssd); // Atualiza o display
 
     // Habilita interrupções nos botões
     gpio_set_irq_enabled_with_callback(BTN_A_PIN, GPIO_IRQ_EDGE_FALL, true, &gpio_irq_handler);
     gpio_set_irq_enabled_with_callback(BTN_B_PIN, GPIO_IRQ_EDGE_FALL, true, &gpio_irq_handler);
 
-    printf("Sistema inicializado. Aguardando interações...\n");
+    printf("Sistema aqui inicializado. Aguardando interações...\n");
 
     while (true) {
         // Verifica se há caracteres disponíveis no Serial Monitor
@@ -114,8 +114,8 @@ int main() {
                 // Exibe o caractere no display SSD1306
                 ssd1306_fill(&ssd, false); // Limpa o display
                 ssd1306_draw_char(&ssd, character, 58, 30);
-                ssd1306_draw_string(&ssd, green_led_state_message, 10, 10);
-                ssd1306_draw_string(&ssd, blue_led_state_message, 10, 50);
+                ssd1306_draw_string(&ssd, message_for_green, 10, 10);
+                ssd1306_draw_string(&ssd, message_for_blue, 10, 50);
                 ssd1306_send_data(&ssd); // Atualiza o display
 
                 // Se o caractere for um número, exibe na matriz de LEDs
@@ -134,21 +134,21 @@ int main() {
     }
 }
 
-// Inicializa um LED em um pino específico
+// aqui inicializa um LED em um pino específico
 void init_led(uint8_t led_pin) {
     gpio_init(led_pin);
     gpio_set_dir(led_pin, GPIO_OUT);
     gpio_put(led_pin, false); // Inicia desligado
 }
 
-// Inicializa um botão em um pino específico
+// aqui inicializa um botão em um pino específico
 void init_btn(uint8_t btn_pin) {
     gpio_init(btn_pin);
     gpio_set_dir(btn_pin, GPIO_IN);
     gpio_pull_up(btn_pin);
 }
 
-// Inicializa a comunicação I2C
+// aqui inicializa a comunicação I2C
 void init_i2c() {
     i2c_init(I2C_PORT, 400 * 1000);
     gpio_set_function(I2C_SDA, GPIO_FUNC_I2C);
@@ -157,7 +157,7 @@ void init_i2c() {
     gpio_pull_up(I2C_SCL);
 }
 
-// Inicializa o display OLED
+// aqui inicializa o display OLED
 void init_display(ssd1306_t *ssd) {
     ssd1306_init(ssd, 128, 64, false, ADD, I2C_PORT);
     ssd1306_config(ssd);
@@ -171,14 +171,14 @@ void init_display(ssd1306_t *ssd) {
 // Atualiza as mensagens exibidas no display
 void update_led_messages() {
     if (green_led_state)
-        strcpy(green_led_state_message, "Verde ON.");
+        strcpy(message_for_green, "Verde ON.");
     else
-        strcpy(green_led_state_message, "Verde OFF.");
+        strcpy(message_for_green, "Verde OFF.");
 
     if (blue_led_state)
-        strcpy(blue_led_state_message, "Azul ON.");
+        strcpy(message_for_blue, "Azul ON.");
     else
-        strcpy(blue_led_state_message, "Azul OFF.");
+        strcpy(message_for_blue, "Azul OFF.");
 }
 
 // Função de callback para as interrupções dos botões
@@ -186,9 +186,9 @@ void gpio_irq_handler(uint gpio, uint32_t events) {
     uint32_t current_time = to_us_since_boot(get_absolute_time());
 
     // Verifica qual botão foi pressionado.
-    if (gpio == BTN_A_PIN && (current_time - last_time_btn_a > 200000)) {
+    if (gpio == BTN_A_PIN && (current_time - last_press_a > 200000)) {
         // Atualiza o tempo do último evento do botão A.
-        last_time_btn_a = current_time;
+        last_press_a = current_time;
         green_led_state = !green_led_state;
 
         // Atualiza o estado do LED verde
@@ -197,14 +197,14 @@ void gpio_irq_handler(uint gpio, uint32_t events) {
         // Atualiza as mensagens no display
         update_led_messages();
         ssd1306_fill(&ssd, false); // Limpa o display
-        ssd1306_draw_string(&ssd, green_led_state_message, 10, 10);
-        ssd1306_draw_string(&ssd, blue_led_state_message, 10, 50);
+        ssd1306_draw_string(&ssd, message_for_green, 10, 10);
+        ssd1306_draw_string(&ssd, message_for_blue, 10, 50);
         ssd1306_send_data(&ssd); // Atualiza o display
 
-        printf("%s\n", green_led_state_message);
-    } else if (gpio == BTN_B_PIN && (current_time - last_time_btn_b > 200000)) {
+        printf("%s\n", message_for_green);
+    } else if (gpio == BTN_B_PIN && (current_time - last_press_b > 200000)) {
         // Atualiza o tempo do último evento do botão B.
-        last_time_btn_b = current_time;
+        last_press_b = current_time;
         blue_led_state = !blue_led_state;
 
         // Atualiza o estado do LED azul
@@ -213,15 +213,15 @@ void gpio_irq_handler(uint gpio, uint32_t events) {
         // Atualiza as mensagens no display
         update_led_messages();
         ssd1306_fill(&ssd, false); // Limpa o display
-        ssd1306_draw_string(&ssd, green_led_state_message, 10, 10);
-        ssd1306_draw_string(&ssd, blue_led_state_message, 10, 50);
+        ssd1306_draw_string(&ssd, message_for_green, 10, 10);
+        ssd1306_draw_string(&ssd, message_for_blue, 10, 50);
         ssd1306_send_data(&ssd); // Atualiza o display
 
-        printf("%s\n", blue_led_state_message);
+        printf("%s\n", message_for_blue);
     }
 }
 
-// Inicializa a matriz de LEDs WS2812
+// aqui inicializa a matriz de LEDs WS2812
 void ws2812b_init(uint pin) {
     uint offset = pio_add_program(pio0, &inter_rp_2040_program);
     led_matrix_pio = pio0;
