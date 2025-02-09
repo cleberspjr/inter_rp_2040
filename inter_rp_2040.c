@@ -64,8 +64,8 @@ static void gpio_irq_handler(uint gpio, uint32_t events);
 
 static volatile uint32_t last_press_a = 0; 
 static volatile uint32_t last_press_b = 0; 
-static volatile bool green_led_state = false; 
-static volatile bool blue_led_state = false; 
+static volatile bool led_green_status = false; 
+static volatile bool led_blue_status = false; 
 static char message_for_green[20] = "Verde OFF.";
 static char message_for_blue[20] = "Azul OFF."; 
 
@@ -170,15 +170,15 @@ void init_display(ssd1306_t *ssd) {
 
 // Atualiza as mensagens exibidas no display
 void update_led_messages() {
-    if (green_led_state)
-        strcpy(message_for_green, "Verde ON.");
+    if (led_green_status)
+        strcpy(message_for_green, "Verde Ligado.");
     else
-        strcpy(message_for_green, "Verde OFF.");
+        strcpy(message_for_green, "Verde Desligado.");
 
-    if (blue_led_state)
-        strcpy(message_for_blue, "Azul ON.");
+    if (led_blue_status)
+        strcpy(message_for_blue, "Azul Ligado.");
     else
-        strcpy(message_for_blue, "Azul OFF.");
+        strcpy(message_for_blue, "Azul Desligado.");
 }
 
 // Função de callback para as interrupções dos botões
@@ -189,10 +189,10 @@ void gpio_irq_handler(uint gpio, uint32_t events) {
     if (gpio == BTN_A_PIN && (current_time - last_press_a > 200000)) {
         // Atualiza o tempo do último evento do botão A.
         last_press_a = current_time;
-        green_led_state = !green_led_state;
+        led_green_status = !led_green_status;
 
         // Atualiza o estado do LED verde
-        gpio_put(GREEN_LED_PIN, green_led_state);
+        gpio_put(GREEN_LED_PIN, led_green_status);
 
         // Atualiza as mensagens no display
         update_led_messages();
@@ -205,10 +205,10 @@ void gpio_irq_handler(uint gpio, uint32_t events) {
     } else if (gpio == BTN_B_PIN && (current_time - last_press_b > 200000)) {
         // Atualiza o tempo do último evento do botão B.
         last_press_b = current_time;
-        blue_led_state = !blue_led_state;
+        led_blue_status = !led_blue_status;
 
         // Atualiza o estado do LED azul
-        gpio_put(BLUE_LED_PIN, blue_led_state);
+        gpio_put(BLUE_LED_PIN, led_blue_status);
 
         // Atualiza as mensagens no display
         update_led_messages();
