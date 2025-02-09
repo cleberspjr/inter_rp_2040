@@ -47,20 +47,15 @@ Interação com o Botão B - alterna o estado do LED RGB AZUL(on / off) tanto no
 
 ## MODO DE EXECUÇÃO
 
-1. Clonar o Repositório:
+1. Clonar o Repositório: git clone https://github.com/cleberspjr/inter_rp_2040.git
 
-```bash
-git clone https://github.com/cleberspjr/inter_rp_2040.git
-```
+2. Configure o ambiente de desenvolvimento PICO SDK
 
-2. Configure o ambiente de desenvolvimento seguindo as instruções do Pico SDK
+3. Abra o projeto no VS Code e importe o projeto através da extensão Raspberry Pi 
 
-3. Abra o projeto no VS Code
-
-4. Importe o projeto através da extensão Raspberry Pi 
-
-5. Execute a simulação na placa Bitdoglab
+4. Execute a simulação na placa Bitdoglab
 
 
 ## LINK PARA O VÍDEO DA TAREFA: 
-EM BREVE
+
+https://drive.google.com/file/d/184CRBQ3CcfSQjxrG5GN2rsEqr3uci8zr/view?usp=sharing
