@@ -19,7 +19,7 @@
 #define BTN_A_PIN 5
 #define BTN_B_PIN 6
 
-// Matriz 5x5 que mostra os números
+// Matriz 5x5 que mostra os números na matrix
 const uint32_t numbers[10][25] = {
     {1,1,1,1,1,  1,0,0,0,1,  1,0,0,0,1,  1,0,0,0,1,  1,1,1,1,1}, // 0
     {1,1,1,1,1,  0,0,1,0,0,  0,0,1,0,1,  0,1,1,0,0,  0,0,1,0,0}, // 1
